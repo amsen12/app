@@ -2,15 +2,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:app/features/customer/auth/login/register/register_screen.dart';
 import 'package:app/features/customer/auth/login/register/technician_register_screen.dart';
+import 'package:app/features/customer/auth/login/register/forgot_password_screen.dart';
 import 'package:app/l10n/app_localizations.dart';
 import 'package:app/providers/user_provider.dart';
 import 'package:app/providers/theme_provider.dart';
-import 'package:app/widgets/cusstom_text_Button.dart';
-import 'package:app/widgets/custom_eleveted_button.dart';
-import 'package:app/widgets/custom_text_Widget.dart';
-import 'package:app/widgets/custom_text_field.dart';
+import 'package:app/features/technican/profile_technican/profile_tab.dart';
+
 import 'package:app/utils/profixStyles.dart';
 import 'package:app/utils/profix_colors.dart';
+import 'package:app/utils/profix_theme.dart';
 import 'package:provider/provider.dart';
 
 import 'package:app/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -19,7 +19,8 @@ import 'package:app/features/auth/domain/repositories/auth_repository.dart';
 import 'package:app/core/network/api_client.dart';
 import 'package:app/core/services/auth_service.dart';
 
-import '../../../../screens/customer_home_screen.dart';
+
+
 import '../../../../screens/landing_screen.dart';
 import '../home_screen/main_navigator.dart';
 
@@ -36,6 +37,8 @@ class _LoginScreenState extends State<LoginScreen> {
   var passwordController = TextEditingController();
   var formKey = GlobalKey<FormState>();
   bool isObscured = true;
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
 
   late final AuthRepository _authRepository;
   late final AuthService _authService;
@@ -48,8 +51,18 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    var themeProvider = Provider.of<AppThemeProvider>(context);
+    final themeProvider = Provider.of<AppThemeProvider>(context);
+    final l10n = AppLocalizations.of(context)!;
     bool isDark = themeProvider.isDarkTheme();
 
     var height = MediaQuery.of(context).size.height;
@@ -57,184 +70,227 @@ class _LoginScreenState extends State<LoginScreen> {
     final String userType = ModalRoute.of(context)?.settings.arguments as String? ?? 'customer';
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF0F1729) : Colors.white,
-      appBar: AppBar(
-        backgroundColor: isDark ? const Color(0xFF0F1729) : Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: isDark ? Colors.white : Colors.black),
-          onPressed: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              MaterialPageRoute(builder: (_) => LandingScreen(onSelectRole: (_) {})),
-              (route) => false,
-            );
-          },
+        backgroundColor: ProfixTheme.getBackgroundColor(isDark),
+        appBar: AppBar(
+          backgroundColor: ProfixTheme.getBackgroundColor(isDark),
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios, color: ProfixTheme.getTextColor(isDark), size: 20),
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(
+                  builder: (context) => LandingScreen(
+                    onSelectRole: (role) {
+                      // Handle role selection if needed
+                    },
+                  ),
+                ),
+                (route) => false,
+              );
+            },
+          ),
+          title: Text(
+            userType == 'customer' ? l10n.customer_login : l10n.technician_login,
+            style: ProfixStyles.bold20black.copyWith(
+              color: ProfixTheme.getTextColor(isDark),
+            ),
+          ),
+          centerTitle: false,
         ),
-        title: Text(
-          userType == 'customer' ? "Customer Login" : "Technician Login",
-          style: TextStyle(color: isDark ? Colors.white : Colors.black, fontSize: 18),
-        ),
-        centerTitle: false,
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
-        child: SingleChildScrollView(
-          child: Form(
-            key: formKey,
+        body: SingleChildScrollView(
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: height * 0.05),
+                const SizedBox(height: 40),
                 Container(
-                  padding: const EdgeInsets.all(20),
+                  width: 100,
+                  height: 100,
                   decoration: BoxDecoration(
-                    color: userType == 'customer' ? Colors.blue[50] : const Color(0xFFE8F5E9),
-                    borderRadius: BorderRadius.circular(20),
+                    color: ProfixColors.primary.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(50),
                   ),
                   child: Icon(
-                    userType == 'customer' ? Icons.person_outline : Icons.build_outlined,
-                    size: 60,
-                    color: userType == 'customer' ? Colors.blue[400] : Colors.green[600],
+                    userType == 'customer' ? Icons.person : Icons.build,
+                    size: 50,
+                    color: ProfixColors.primary,
                   ),
                 ),
-                const SizedBox(height: 24),
-                const Text(
-                  "Welcome Back!",
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: ProfixColors.black),
+                const SizedBox(height: 32),
+                Text(
+                  l10n.welcome_to_profix,
+                  style: ProfixStyles.text3xlBold.copyWith(
+                    color: ProfixTheme.getTextColor(isDark),
+                  ),
                 ),
                 const SizedBox(height: 8),
-                const Text(
-                  "Sign in to continue",
-                  style: TextStyle(fontSize: 16, color: ProfixColors.gray),
+                Text(
+                  l10n.your_trusted_platform,
+                  textAlign: TextAlign.center,
+                  style: ProfixStyles.medium16gray.copyWith(
+                    color: ProfixTheme.getMutedTextColor(isDark),
+                    fontWeight: FontWeight.w400,
+                  ),
                 ),
                 const SizedBox(height: 40),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(AppLocalizations.of(context)!.email,
-                      style: const TextStyle(fontWeight: FontWeight.w500, color: ProfixColors.gray)),
-                ),
-                const SizedBox(height: 8),
-                CustomTextField(
-                  controller: emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  hintText: "Enter your email",
-                  prefixIcon: const Icon(Icons.email_outlined, color: Colors.grey),
-                  validator: (text) {
-                    if (text == null || text.trim().isEmpty) return 'Please enter email';
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 20),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(AppLocalizations.of(context)!.password,
-                      style: const TextStyle(fontWeight: FontWeight.w500, color: ProfixColors.gray)),
-                ),
-                const SizedBox(height: 8),
-                CustomTextField(
-                  controller: passwordController,
-                  keyboardType: TextInputType.visiblePassword,
-                  hintText: "Enter your password",
-                  obscureText: isObscured,
-                  prefixIcon: const Icon(Icons.lock_outline, color: ProfixColors.gray),
-                  suffixIcon: IconButton(
-                    onPressed: () {
-                      setState(() {
-                        isObscured = !isObscured;
-                      });
-                    },
-                    icon: Icon(
-                      isObscured ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                      color: ProfixColors.gray,
+                Container(
+                  decoration: BoxDecoration(
+                    color: ProfixTheme.getSurfaceColor(isDark),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: ProfixTheme.getBorderColor(isDark),
+                      width: 1,
                     ),
                   ),
-                  validator: (text) {
-                    if (text == null || text.trim().isEmpty) return 'Please enter password';
-                    return null;
-                  },
+                  child: TextField(
+                    controller: emailController,
+                    focusNode: _emailFocusNode,
+                    keyboardType: TextInputType.emailAddress,
+                    textInputAction: TextInputAction.next,
+                    onSubmitted: (value) {
+                      FocusScope.of(context).requestFocus(_passwordFocusNode);
+                    },
+                    decoration: InputDecoration(
+                      hintText: l10n.email,
+                      hintStyle: ProfixStyles.regular14gray.copyWith(
+                        color: ProfixTheme.getMutedTextColor(isDark),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.email_outlined,
+                        color: ProfixTheme.getMutedTextColor(isDark),
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    ),
+                    style: ProfixStyles.medium16black.copyWith(
+                      color: ProfixTheme.getTextColor(isDark),
+                    ),
+                    enabled: true,
+                    readOnly: false,
+                  ),
                 ),
+                const SizedBox(height: 16),
+                Container(
+                  decoration: BoxDecoration(
+                    color: ProfixTheme.getSurfaceColor(isDark),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: ProfixTheme.getBorderColor(isDark),
+                      width: 1,
+                    ),
+                  ),
+                  child: TextField(
+                    controller: passwordController,
+                    focusNode: _passwordFocusNode,
+                    obscureText: isObscured,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (value) {
+                      _passwordFocusNode.unfocus();
+                    },
+                    decoration: InputDecoration(
+                      hintText: l10n.password,
+                      hintStyle: ProfixStyles.regular14gray.copyWith(
+                        color: ProfixTheme.getMutedTextColor(isDark),
+                      ),
+                      prefixIcon: Icon(
+                        Icons.lock_outline,
+                        color: ProfixTheme.getMutedTextColor(isDark),
+                      ),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          isObscured ? Icons.visibility_off : Icons.visibility,
+                          color: ProfixTheme.getMutedTextColor(isDark),
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            isObscured = !isObscured;
+                          });
+                        },
+                      ),
+                      border: InputBorder.none,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                    ),
+                    style: ProfixStyles.medium16black.copyWith(
+                      color: ProfixTheme.getTextColor(isDark),
+                    ),
+                    enabled: true,
+                    readOnly: false,
+                  ),
+                ),
+                const SizedBox(height: 12),
                 Align(
                   alignment: Alignment.centerRight,
                   child: TextButton(
-                    onPressed: forgetPassword,
-                    child: Text(AppLocalizations.of(context)!.forget_password,
-                        style: const TextStyle(color: ProfixColors.lightBlue)),
+                    onPressed: () {
+                      Navigator.of(context).pushNamed(ForgotPasswordScreen.routeName);
+                    },
+                    child: Text(
+                      l10n.forgot_password,
+                      style: ProfixStyles.bold14Primary.copyWith(
+                        color: ProfixColors.primary,
+                      ),
+                    ),
                   ),
                 ),
-                const SizedBox(height: 30),
-                SizedBox(
+                const SizedBox(height: 32),
+                Container(
                   width: double.infinity,
-                  height: 55,
-                  child: CustomElevatedButton(
-                    text: AppLocalizations.of(context)!.login,
-                    onButtonClick: login,
+                  height: 56,
+                  decoration: BoxDecoration(
+                    color: ProfixColors.primary,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      onTap: login,
+                      borderRadius: BorderRadius.circular(12),
+                      child: Center(
+                        child: Text(
+                          l10n.login,
+                          style: ProfixStyles.medium16white,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-                SizedBox(height: height * 0.02),
+                const SizedBox(height: 24),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CustomTextWidget(
-                        text: AppLocalizations.of(context)!.dont_have_account,
-                        textStyle: ProfixStyles.medium16black),
-                    CusstomTextButton(
-                      onButtonClicked: () {
-                        if (userType == "customer") {
-                          Navigator.of(context).pushNamed(CustomerRegisterScreen.routeName);
-                        } else {
-                          Navigator.of(context).pushNamed(TechnicianRegisterScreen.routeName);
-                        }
-                      },
-                      text: AppLocalizations.of(context)!.create_account,
-                    )
+                    Text(
+                      l10n.dont_have_account,
+                      style: ProfixStyles.regular14gray.copyWith(
+                        color: ProfixTheme.getMutedTextColor(isDark),
+                      ),
+                    ),
+                    const SizedBox(width: 4),
+                    Expanded(
+                      child: TextButton(
+                        onPressed: () {
+                          if (userType == 'customer') {
+                            Navigator.of(context).pushNamed(CustomerRegisterScreen.routeName);
+                          } else {
+                            Navigator.of(context).pushNamed(TechnicianRegisterScreen.routeName);
+                          }
+                        },
+                        child: Text(
+                          l10n.create_account,
+                          style: ProfixStyles.bold14Primary.copyWith(
+                            color: ProfixColors.primary,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-                SizedBox(height: height * 0.02),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: Colors.blue[50],
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(color: Colors.blue[200]!),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        'حسابات الاختبار (للتجربة فقط):',
-                        style: TextStyle(
-                          color: Colors.blue[800],
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'عميل: customer@test.com\nكلمة المرور: password123',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.blue[700],
-                          fontSize: 12,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'فني: tech@test.com\nكلمة المرور: password123',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.blue[700],
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: height * 0.02),
+                const SizedBox(height: 40),
               ],
             ),
           ),
         ),
-      ),
     );
   }
 
@@ -248,8 +304,18 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future<void> login() async {
-    if (formKey.currentState?.validate() != true) return;
+    // Basic validation since Form was removed
+    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Please enter email and password'),
+          backgroundColor: Colors.red[600],
+        ),
+      );
+      return;
+    }
 
+    final l10n = AppLocalizations.of(context)!;
     final messenger = ScaffoldMessenger.of(context);
     final navigator = Navigator.of(context);
 
@@ -259,11 +325,11 @@ class _LoginScreenState extends State<LoginScreen> {
     if (!hasInternet) {
       messenger.showSnackBar(
         SnackBar(
-          content: const Text('لا يوجد اتصال بالإنترنت. يرجى التحقق من الشبكة والمحاولة مرة أخرى.'),
+          content: Text(l10n.no_internet),
           backgroundColor: Colors.red[600],
           duration: const Duration(seconds: 4),
           action: SnackBarAction(
-            label: 'إغلاق',
+            label: l10n.cancel,
             textColor: Colors.white,
             onPressed: () => messenger.hideCurrentSnackBar(),
           ),
@@ -307,7 +373,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       messenger.showSnackBar(
         SnackBar(
-          content: Text('Login successful! Welcome back, ${user.name}'),
+          content: Text(l10n.login_successful),
           backgroundColor: Colors.green[600],
           duration: const Duration(seconds: 3),
         ),
@@ -322,23 +388,23 @@ class _LoginScreenState extends State<LoginScreen> {
       if (!mounted) return;
       navigator.pop(); // close loader
 
-      String errorMessage = 'Login failed';
+      String errorMessage = l10n.error;
       String errorString = e.toString().toLowerCase();
 
       if (errorString.contains('email') || errorString.contains('password') || errorString.contains('credentials')) {
-        errorMessage = 'البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى التحقق من البيانات والمحاولة مرة أخرى.';
+        errorMessage = l10n.invalid_credentials;
       } else if (errorString.contains('network') || errorString.contains('connection') || errorString.contains('socket')) {
-        errorMessage = 'مشكلة في الاتصال بالشبكة. يرجى التحقق من اتصال الإنترنت والمحاولة مرة أخرى.';
+        errorMessage = l10n.network_error;
       } else if (errorString.contains('not found') || errorString.contains('user')) {
-        errorMessage = 'المستخدم غير موجود. يرجى التحقق من البريد الإلكتروني أو إنشاء حساب جديد.';
+        errorMessage = l10n.user_not_found;
       } else if (errorString.contains('blocked') || errorString.contains('suspended')) {
-        errorMessage = 'تم تعليق حسابك. يرجى التواصل مع الدعم الفني.';
+        errorMessage = l10n.account_suspended;
       } else if (errorString.contains('timeout')) {
-        errorMessage = 'استغرق الوقت. يرجى المحاولة مرة أخرى.';
+        errorMessage = l10n.something_went_wrong;
       } else if (errorString.contains('server') || errorString.contains('500')) {
-        errorMessage = 'مشكلة في الخادم. يرجى المحاولة لاحقاً.';
+        errorMessage = l10n.something_went_wrong;
       } else {
-        errorMessage = 'حدث خطأ غير متوقع. الرجاء المحاولة مرة أخرى. كود الخطأ: $errorString';
+        errorMessage = l10n.something_went_wrong;
       }
 
       messenger.showSnackBar(
@@ -347,7 +413,7 @@ class _LoginScreenState extends State<LoginScreen> {
           backgroundColor: Colors.red[600],
           duration: const Duration(seconds: 5),
           action: SnackBarAction(
-            label: 'إغلاق',
+            label: l10n.cancel,
             textColor: Colors.white,
             onPressed: () => messenger.hideCurrentSnackBar(),
           ),
@@ -356,5 +422,5 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  void forgetPassword() {}
+
 }

@@ -1,17 +1,29 @@
 import 'package:flutter/material.dart';
+import '../features/customer/auth/login/login_screen.dart';
 import '../models/models.dart';
-import '../theme.dart';
-import 'package:app/features/customer/auth/login/login_screen.dart';
-import 'package:app/features/customer/auth/login/register/technician_register_screen.dart';
-
+import '../utils/profix_colors.dart';
+import '../utils/profix_theme.dart';
+import '../utils/profixStyles.dart';
+import '../l10n/app_localizations.dart';
+import '../widgets/themed_container.dart';
+import 'package:flutter/material.dart';
+import '../utils/profix_colors.dart';
+import '../utils/profix_theme.dart';
 class LandingScreen extends StatelessWidget {
   static const String routeName = 'landing';
   final Function(UserRole) onSelectRole;
+
   const LandingScreen({super.key, required this.onSelectRole});
 
   @override
   Widget build(BuildContext context) {
+    // إرجاع الـ Localization لو محتاجه
+    // final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
+      backgroundColor: ProfixTheme.getBackgroundColor(isDark),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -19,50 +31,72 @@ class LandingScreen extends StatelessWidget {
             children: [
               const Spacer(),
               // Logo
-              Container(
-                width: 80, height: 80,
-                decoration: BoxDecoration(color: AppTheme.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(20)),
-                child: const Icon(Icons.build_circle, size: 48, color: AppTheme.primary),
+              ThemedContainer(
+                width: 90,
+                height: 90,
+                borderRadius: 24,
+                boxShadow: [],
+                color: ProfixColors.primary.withOpacity(0.1),
+                child: const Icon(Icons.build_circle, size: 54, color: ProfixColors.primary),
               ),
-              const SizedBox(height: 20),
-              const Text('ProFix', style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              Text('Your trusted home services platform', style: TextStyle(color: Colors.grey.shade600, fontSize: 16), textAlign: TextAlign.center),
+              const SizedBox(height: 24),
+              Text('ProFix',
+                style: TextStyle(
+                    fontSize: ProfixStyles.text4xl,
+                    fontWeight: FontWeight.bold,
+                    color: isDark ? ProfixColors.white : ProfixColors.textMain
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                "Your trusted home services platform",
+                style: TextStyle(color: Colors.grey, fontSize: ProfixStyles.textSm + 1,),
+                textAlign: TextAlign.center,
+              ),
               const Spacer(),
-              const Text('Continue as', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18)),
-              const SizedBox(height: 20),
+              Text(
+                "Continue as",
+                style: TextStyle(
+                    fontWeight: FontWeight.w700,
+                    fontSize: ProfixStyles.textLg,
+                    color: isDark ? ProfixColors.white : ProfixColors.textMain
+                ),
+              ),
+              const SizedBox(height: 24),
+              // كارت العميل
               _roleCard(
                 context,
                 icon: Icons.person_outline,
-                title: 'Customer',
-                subtitle: 'Find skilled technicians for your home repairs',
-                color: AppTheme.primary,
+                title: "Customer",
+                subtitle: "Find skilled technicians for repairs",
+                color: ProfixColors.primary,
                 onTap: () {
-                  onSelectRole(UserRole.customer);
+                  onSelectRole(UserRole.customer); // تنفيذ اختيار الدور
                   Navigator.pushReplacementNamed(
-                    context, 
-                    LoginScreen.routeName,
-                    arguments: 'customer'
+                      context,
+                      LoginScreen.routeName,
+                      arguments: 'customer'
                   );
                 },
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 16),
+              // كارت الفني
               _roleCard(
                 context,
                 icon: Icons.build_outlined,
-                title: 'Technician',
-                subtitle: 'Offer your services and earn money',
-                color: AppTheme.success,
+                title: "Technician",
+                subtitle: "Offer your services and earn money",
+                color: ProfixColors.green,
                 onTap: () {
-                  onSelectRole(UserRole.technician);
+                  onSelectRole(UserRole.technician); // تنفيذ اختيار الدور
                   Navigator.pushReplacementNamed(
-                    context, 
-                    LoginScreen.routeName,
-                    arguments: 'technician'
+                      context,
+                      LoginScreen.routeName,
+                      arguments: 'technician'
                   );
                 },
               ),
-              const SizedBox(height: 32),
+              const Spacer(),
             ],
           ),
         ),
@@ -70,38 +104,54 @@ class LandingScreen extends StatelessWidget {
     );
   }
 
-  Widget _roleCard(BuildContext context, {required IconData icon, required String title, required String subtitle, required Color color, required VoidCallback onTap}) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          border: Border.all(color: color.withValues(alpha: 0.3), width: 2),
-          borderRadius: BorderRadius.circular(16),
-          color: color.withValues(alpha: 0.04),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: color.withValues(alpha: 0.12), borderRadius: BorderRadius.circular(12)),
-              child: Icon(icon, color: color, size: 28),
+  Widget _roleCard(BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required VoidCallback onTap
+  }) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    return ThemedContainer(
+      onTap: onTap, // دي اللي بتخلي الكارت يشتغل لما تضغط عليه
+      padding: const EdgeInsets.all(20),
+      color: isDark ? color.withOpacity(0.06) : color.withOpacity(0.08),
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: color.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(14),
             ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 17)),
-                  const SizedBox(height: 2),
-                  Text(subtitle, style: TextStyle(fontSize: 13, color: Colors.grey.shade600)),
-                ],
-              ),
+            child: Icon(icon, color: color, size: 28),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: ProfixStyles.textBase + 1,
+                    color: isDark ? ProfixColors.white : ProfixColors.textMain,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(subtitle,
+                  style: TextStyle(
+                    fontSize: ProfixStyles.textXs + 1,
+                    color: isDark ? ProfixColors.gray2 : ProfixColors.mutedText,
+                  ),
+                ),
+              ],
             ),
-            Icon(Icons.chevron_right, color: color),
-          ],
-        ),
+          ),
+          Icon(Icons.chevron_right, color: color.withOpacity(0.4), size: 20),
+        ],
       ),
     );
   }

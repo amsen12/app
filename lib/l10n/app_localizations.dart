@@ -493,6 +493,174 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter your default address'**
   String get enterDefaultAddress;
+
+  /// No description provided for @customer.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer'**
+  String get customer;
+
+  /// No description provided for @technician.
+  ///
+  /// In en, this message translates to:
+  /// **'Technician'**
+  String get technician;
+
+  /// No description provided for @no_internet.
+  ///
+  /// In en, this message translates to:
+  /// **'No Internet Connection'**
+  String get no_internet;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @login_successful.
+  ///
+  /// In en, this message translates to:
+  /// **'Login successful! Welcome back'**
+  String get login_successful;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// No description provided for @invalid_credentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email or password. Please check your credentials and try again.'**
+  String get invalid_credentials;
+
+  /// No description provided for @network_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Network error. Please check your internet connection and try again.'**
+  String get network_error;
+
+  /// No description provided for @user_not_found.
+  ///
+  /// In en, this message translates to:
+  /// **'User not found. Please check your email or register for a new account.'**
+  String get user_not_found;
+
+  /// No description provided for @account_suspended.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been suspended. Please contact support.'**
+  String get account_suspended;
+
+  /// No description provided for @something_went_wrong.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong'**
+  String get something_went_wrong;
+
+  /// No description provided for @find_skilled_technicians.
+  ///
+  /// In en, this message translates to:
+  /// **'Find skilled technicians for your home repairs'**
+  String get find_skilled_technicians;
+
+  /// No description provided for @offer_services_and_earn.
+  ///
+  /// In en, this message translates to:
+  /// **'Offer your services and earn money'**
+  String get offer_services_and_earn;
+
+  /// No description provided for @continue_as.
+  ///
+  /// In en, this message translates to:
+  /// **'Continue as'**
+  String get continue_as;
+
+  /// No description provided for @coming_soon.
+  ///
+  /// In en, this message translates to:
+  /// **'Coming Soon'**
+  String get coming_soon;
+
+  /// No description provided for @request_accepted.
+  ///
+  /// In en, this message translates to:
+  /// **'Request accepted!'**
+  String get request_accepted;
+
+  /// No description provided for @dashboard.
+  ///
+  /// In en, this message translates to:
+  /// **'Dashboard'**
+  String get dashboard;
+
+  /// No description provided for @find.
+  ///
+  /// In en, this message translates to:
+  /// **'Find'**
+  String get find;
+
+  /// No description provided for @my_jobs.
+  ///
+  /// In en, this message translates to:
+  /// **'My Jobs'**
+  String get my_jobs;
+
+  /// No description provided for @customer_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer Login'**
+  String get customer_login;
+
+  /// No description provided for @technician_login.
+  ///
+  /// In en, this message translates to:
+  /// **'Technician Login'**
+  String get technician_login;
+
+  /// No description provided for @welcome_to_profix.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to ProFix'**
+  String get welcome_to_profix;
+
+  /// No description provided for @your_trusted_platform.
+  ///
+  /// In en, this message translates to:
+  /// **'Your trusted home services platform'**
+  String get your_trusted_platform;
+
+  /// No description provided for @forgot_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot Password?'**
+  String get forgot_password;
+
+  /// No description provided for @test_accounts.
+  ///
+  /// In en, this message translates to:
+  /// **'Test Accounts'**
+  String get test_accounts;
+
+  /// No description provided for @customer_test.
+  ///
+  /// In en, this message translates to:
+  /// **'Customer: customer@test.com'**
+  String get customer_test;
+
+  /// No description provided for @technician_test.
+  ///
+  /// In en, this message translates to:
+  /// **'Technician: tech@test.com'**
+  String get technician_test;
+
+  /// No description provided for @test_password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password: password123'**
+  String get test_password;
 }
 
 class _AppLocalizationsDelegate

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/models.dart';
 import '../providers/app_provider.dart';
-import '../theme.dart';
+import '../utils/profix_colors.dart';
+import '../utils/profix_theme.dart';
+import '../utils/profixStyles.dart';
 
 class RequestFormScreen extends StatefulWidget {
   final ServiceType? initialService;
@@ -68,7 +70,7 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Select Service', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+            Text('Select Service', style: ProfixStyles.getTextStyle(size: ProfixStyles.textSm + 1, weight: FontWeight.w600)),
             const SizedBox(height: 12),
             Row(
               children: [
@@ -80,7 +82,7 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
               ],
             ),
             const SizedBox(height: 24),
-            const Text('Describe the Problem', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+            Text('Describe the Problem', style: ProfixStyles.getTextStyle(size: ProfixStyles.textSm + 1, weight: FontWeight.w600)),
             const SizedBox(height: 8),
             TextField(
               controller: _descCtrl,
@@ -89,35 +91,35 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
               decoration: const InputDecoration(hintText: 'What needs to be fixed? Please provide details...'),
             ),
             const SizedBox(height: 24),
-            const Text('Service Location', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
+            Text('Service Location', style: ProfixStyles.getTextStyle(size: ProfixStyles.textSm + 1, weight: FontWeight.w600)),
             const SizedBox(height: 8),
             GestureDetector(
               onTap: () => setState(() => _locationSelected = true),
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  border: Border.all(color: _locationSelected ? AppTheme.primary : Colors.grey.shade300, width: _locationSelected ? 2 : 1),
+                  border: Border.all(color: _locationSelected ? ProfixColors.primary : Colors.grey.shade300, width: _locationSelected ? 2 : 1),
                   borderRadius: BorderRadius.circular(12),
-                  color: _locationSelected ? AppTheme.primary.withOpacity(0.05) : null,
+                  color: _locationSelected ? ProfixColors.primary.withOpacity(0.05) : null,
                 ),
                 child: Row(
                   children: [
                     Container(
                       padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(color: AppTheme.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
-                      child: const Icon(Icons.location_on, color: AppTheme.primary),
+                      decoration: BoxDecoration(color: ProfixColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(10)),
+                      child: const Icon(Icons.location_on, color: ProfixColors.primary),
                     ),
                     const SizedBox(width: 12),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(_locationSelected ? 'Location Selected' : 'Select Location', style: const TextStyle(fontWeight: FontWeight.w600)),
-                          Text(_locationSelected ? '123 Main Street, Apt 4B' : 'Tap to choose on map', style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
+                          Text(_locationSelected ? 'Location Selected' : 'Select Location', style: ProfixStyles.textBaseBold),
+                          Text(_locationSelected ? '123 Main Street, Apt 4B' : 'Tap to choose on map', style: ProfixStyles.textXsRegular.copyWith(color: Colors.grey.shade500)),
                         ],
                       ),
                     ),
-                    Icon(_locationSelected ? Icons.check_circle : Icons.keyboard_arrow_down, color: _locationSelected ? AppTheme.success : Colors.grey),
+                    Icon(_locationSelected ? Icons.check_circle : Icons.keyboard_arrow_down, color: _locationSelected ? ProfixColors.green : Colors.grey),
                   ],
                 ),
               ),
@@ -134,7 +136,7 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
             icon: _isSubmitting
                 ? const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
                 : const Icon(Icons.send),
-            label: Text(_isSubmitting ? 'Submitting...' : 'Submit Request', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+            label: Text(_isSubmitting ? 'Submitting...' : 'Submit Request', style: ProfixStyles.textBaseBold),
           ),
         ),
       ),
@@ -149,15 +151,15 @@ class _RequestFormScreenState extends State<RequestFormScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
-            border: Border.all(color: isSelected ? AppTheme.primary : Colors.grey.shade300, width: 2),
+            border: Border.all(color: isSelected ? ProfixColors.primary : Colors.grey.shade300, width: 2),
             borderRadius: BorderRadius.circular(12),
-            color: isSelected ? AppTheme.primary.withOpacity(0.08) : Colors.white,
+            color: isSelected ? ProfixColors.primary.withOpacity(0.08) : Colors.white,
           ),
           child: Column(
             children: [
-              Text(icon, style: const TextStyle(fontSize: 28)),
+              Text(icon, style: ProfixStyles.text2xlBold),
               const SizedBox(height: 6),
-              Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: isSelected ? AppTheme.primary : Colors.grey.shade700)),
+              Text(label, style: ProfixStyles.getTextStyle(size: ProfixStyles.textXs, weight: FontWeight.w600, color: isSelected ? ProfixColors.primary : Colors.grey.shade700)),
             ],
           ),
         ),

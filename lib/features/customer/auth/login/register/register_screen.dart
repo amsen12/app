@@ -19,7 +19,7 @@ import 'package:app/core/network/api_client.dart';
 import 'package:app/core/services/auth_service.dart';
 import 'package:app/providers/user_provider.dart';
 
-import '../../../../../screens/customer_home_screen.dart';
+
 import '../../home_screen/main_navigator.dart';
 
 class CustomerRegisterScreen extends StatefulWidget {

@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 import '../models/models.dart';
 import '../providers/app_provider.dart';
 import '../widgets/shared_widgets.dart';
-import '../theme.dart';
+import '../utils/profix_colors.dart';
+import '../utils/profix_theme.dart';
+import '../utils/profixStyles.dart';
 import 'chat_screen.dart';
 
 class TechnicianRequestDetailsScreen extends StatefulWidget {
@@ -94,8 +96,8 @@ class _TechnicianRequestDetailsScreenState extends State<TechnicianRequestDetail
                       Row(children: [
                         CircleAvatar(
                           radius: 22,
-                          backgroundColor: AppTheme.primary.withOpacity(0.1),
-                          child: Text(request.customerName[0], style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primary)),
+                          backgroundColor: ProfixColors.primary.withOpacity(0.1),
+                          child: Text(request.customerName[0], style: const TextStyle(fontWeight: FontWeight.bold, color: ProfixColors.primary)),
                         ),
                         const SizedBox(width: 12),
                         Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -135,7 +137,7 @@ class _TechnicianRequestDetailsScreenState extends State<TechnicianRequestDetail
                     onPressed: () => app.updateRequest(widget.requestId, status: RequestStatus.completed),
                     icon: const Icon(Icons.check_circle),
                     label: const Text('Complete'),
-                    style: ElevatedButton.styleFrom(backgroundColor: AppTheme.success),
+                    style: ElevatedButton.styleFrom(backgroundColor: ProfixColors.green),
                   )),
                 ],
               ),
@@ -153,15 +155,15 @@ class _TechnicianRequestDetailsScreenState extends State<TechnicianRequestDetail
                       padding: const EdgeInsets.all(16),
                       child: Row(
                         children: [
-                          const Icon(Icons.chat_bubble_outline, color: AppTheme.primary),
+                          Icon(Icons.chat_bubble_outline, color: ProfixColors.primary),
                           const SizedBox(width: 10),
                           const Text('Chat with Customer', style: TextStyle(fontWeight: FontWeight.w600, fontSize: 15)),
                           if (messages.isNotEmpty) ...[
                             const SizedBox(width: 8),
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                              decoration: BoxDecoration(color: AppTheme.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-                              child: Text('${messages.length}', style: const TextStyle(fontSize: 12, color: AppTheme.primary, fontWeight: FontWeight.w600)),
+                              decoration: BoxDecoration(color: ProfixColors.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
+                              child: Text('${messages.length}', style: const TextStyle(fontSize: 12, color: ProfixColors.primary, fontWeight: FontWeight.w600)),
                             ),
                           ],
                           const Spacer(),
@@ -175,8 +177,8 @@ class _TechnicianRequestDetailsScreenState extends State<TechnicianRequestDetail
                       decoration: const BoxDecoration(border: Border(top: BorderSide(color: Color(0xFFF0F0F0)))),
                       child: chatEnabled
                           ? ListTile(
-                        leading: const Icon(Icons.open_in_new, color: AppTheme.primary),
-                        title: const Text('Open Chat', style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.w600)),
+                        leading: const Icon(Icons.open_in_new, color: ProfixColors.primary),
+                        title: const Text('Open Chat', style: TextStyle(color: ProfixColors.primary, fontWeight: FontWeight.w600)),
                         onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => ChatScreen(requestId: widget.requestId, otherUserName: request.customerName))),
                       )
                           : !chatReadOnly

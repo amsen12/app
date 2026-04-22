@@ -292,7 +292,8 @@ class _TechnicianRegisterScreenState extends State<TechnicianRegisterScreen> {
                 child: ElevatedButton(
                   onPressed: _onRegisterPressed, // استدعاء ميثود التحقق
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: ProfixColors.blue,
+                    //
+                    backgroundColor: ProfixColors.primary,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                     elevation: 0,
                   ),

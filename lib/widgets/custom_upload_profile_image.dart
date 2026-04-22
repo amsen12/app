@@ -7,11 +7,11 @@ class CustomUploadProfileImage extends StatelessWidget {
   final VoidCallback onDelete;
 
   const CustomUploadProfileImage({
-    Key? key,
+    super.key,
     required this.imageFile,
     required this.onTap,
     required this.onDelete,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

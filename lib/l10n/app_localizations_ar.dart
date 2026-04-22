@@ -205,4 +205,91 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get enterDefaultAddress => 'أدخل عنوانك الافتراضي';
+
+  @override
+  String get customer => 'العميل';
+
+  @override
+  String get technician => 'الفني';
+
+  @override
+  String get no_internet => 'لا يوجد اتصال بالإنترنت';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get login_successful => 'تم تسجيل الدخول بنجاح! مرحبًا بعودتك';
+
+  @override
+  String get error => 'خطأ';
+
+  @override
+  String get invalid_credentials =>
+      'البريد الإلكتروني أو كلمة المرور غير صحيحة. يرجى التحقق من بياناتك وتجربة مرة أخرى.';
+
+  @override
+  String get network_error =>
+      'خطأ في الشبكة. يرجى التحقق من اتصالك بالإنترنت وتجربة مرة أخرى.';
+
+  @override
+  String get user_not_found =>
+      'لم يتم العثور على المستخدم. يرجى التحقق من بريدك الإلكتروني أو التسجيل للحصول على حساب جديد.';
+
+  @override
+  String get account_suspended => 'تم تعليق حسابك. يرجى الاتصال بالدعم.';
+
+  @override
+  String get something_went_wrong => 'حدث خطأ ما';
+
+  @override
+  String get find_skilled_technicians => 'ابحث عن فنيين مهرة';
+
+  @override
+  String get offer_services_and_earn => 'قدم خدماتك واكسب المال';
+
+  @override
+  String get continue_as => 'استمر ك';
+
+  @override
+  String get coming_soon => 'قريبا';
+
+  @override
+  String get request_accepted => 'تم قبول الطلب!';
+
+  @override
+  String get dashboard => 'لوحة التحكم';
+
+  @override
+  String get find => 'ابحث';
+
+  @override
+  String get my_jobs => 'وظائفي';
+
+  @override
+  String get customer_login => 'تسجيل دخول العميل';
+
+  @override
+  String get technician_login => 'تسجيل دخول الفني';
+
+  @override
+  String get welcome_to_profix => 'مرحبًا بكم في بروفيكس';
+
+  @override
+  String get your_trusted_platform => 'منصتكم الموثوقة لخدمات المنزل';
+
+  @override
+  String get forgot_password => 'نسيت كلمة المرور؟';
+
+  @override
+  String get test_accounts => 'حسابات الاختبار';
+
+  @override
+  String get customer_test => 'العميل: customer@test.com';
+
+  @override
+  String get technician_test => 'الفني: tech@test.com';
+
+  @override
+  String get test_password => 'كلمة المرور: password123';
 }

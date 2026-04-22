@@ -37,7 +37,7 @@ class MyReviewsPage extends StatelessWidget {
                 border: Border.all(color: Colors.grey.shade300),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Colors.grey.withValues(alpha: 0.1),
                     spreadRadius: 2,
                     blurRadius: 5,
                   ),

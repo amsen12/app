@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:app/providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
-class TechnicalSecurityPrivacy extends StatelessWidget {
-  const TechnicalSecurityPrivacy({super.key});
+class CustomerSecurityPrivacy extends StatelessWidget {
+  const CustomerSecurityPrivacy({super.key});
   static String routeName = "SecurityPrivacyPage";
   
   @override

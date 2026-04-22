@@ -1,14 +1,13 @@
-
-import 'package:app/screens/technician_search_screen.dart';
+import 'package:app/features/customer/auth/home_screen/tabs/search_tab/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../screens/request_page_screen.dart';
-import 'tabs/search_tab/search_screen.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../../../../models/models.dart';
 import '../../../../providers/app_provider.dart';
-import '../../../../theme.dart';
-import '../../../../screens/customer_home_screen.dart';
+import '../../../../screens/request_page_screen.dart';
 
+import '../../../../screens/technician_search_screen.dart';
+import '../../../../screens/customer_home_screen.dart';
 import '../../../../screens/request_form_screen.dart';
 import '../../../../screens/request_tracking_screen.dart';
 import '../../../../screens/chat_screen.dart';
@@ -40,6 +39,9 @@ class _CustomerShellState extends State<CustomerShell> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
     // Full-screen overlays
     if (_showNotifications) {
       return NotificationsScreen(onBack: () => setState(() => _showNotifications = false));
@@ -75,8 +77,9 @@ class _CustomerShellState extends State<CustomerShell> {
         onViewRequest: (id) => setState(() => _viewingRequestId = id),
         onChat: (id) => setState(() => _chatRequestId = id),
         onNotifications: () => setState(() => _showNotifications = true),
+        onChangeTab: (index) => setState(() => _tab = index),
       ),
-      SearchScreen(),
+      const SearchScreen(),
       RequestsPageScreen(
         onSelectRequest: (id) => setState(() => _viewingRequestId = id),
         onChat: (id) => setState(() => _chatRequestId = id),
@@ -86,15 +89,34 @@ class _CustomerShellState extends State<CustomerShell> {
 
     return Scaffold(
       body: tabs[_tab],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _tab,
-        onDestinationSelected: (i) => setState(() => _tab = i),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home), label: 'Home'),
-          NavigationDestination(icon: Icon(Icons.search_outlined), selectedIcon: Icon(Icons.search), label: 'Search'),
-          NavigationDestination(icon: Icon(Icons.list_alt_outlined), selectedIcon: Icon(Icons.list_alt), label: 'Requests'),
-          NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profile'),
-        ],
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          indicatorColor: theme.colorScheme.primary.withValues(alpha: 0.2),
+          labelTextStyle: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold);
+            }
+            return TextStyle(color: theme.hintColor);
+          }),
+          iconTheme: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return IconThemeData(color: theme.colorScheme.primary);
+            }
+            return IconThemeData(color: theme.hintColor);
+          }),
+        ),
+        child: NavigationBar(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 10,
+          selectedIndex: _tab,
+          onDestinationSelected: (i) => setState(() => _tab = i),
+          destinations: [
+            NavigationDestination(icon: const Icon(Icons.home_outlined), selectedIcon: const Icon(Icons.home), label: l10n.home),
+            NavigationDestination(icon: const Icon(Icons.search_outlined), selectedIcon: const Icon(Icons.search), label: l10n.search),
+            NavigationDestination(icon: const Icon(Icons.list_alt_outlined), selectedIcon: const Icon(Icons.list_alt), label: l10n.requests),
+            NavigationDestination(icon: const Icon(Icons.person_outline), selectedIcon: const Icon(Icons.person), label: l10n.profile),
+          ],
+        ),
       ),
     );
   }
@@ -116,11 +138,12 @@ class _TechnicianShellState extends State<TechnicianShell> {
   String? _viewingRequestId;
   bool _showNotifications = false;
   String? _chatRequestId;
-  bool _viewingFromSearch = false;
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final app = context.read<AppProvider>();
+    final theme = Theme.of(context);
 
     if (_showNotifications) {
       return NotificationsScreen(onBack: () => setState(() => _showNotifications = false));
@@ -134,12 +157,7 @@ class _TechnicianShellState extends State<TechnicianShell> {
       );
     }
     if (_viewingRequestId != null) {
-      return _viewingFromSearch
-          ? TechnicianRequestDetailsScreen(
-        requestId: _viewingRequestId!,
-        onBack: () => setState(() => _viewingRequestId = null),
-      )
-          : TechnicianRequestDetailsScreen(
+      return TechnicianRequestDetailsScreen(
         requestId: _viewingRequestId!,
         onBack: () => setState(() => _viewingRequestId = null),
       );
@@ -147,34 +165,53 @@ class _TechnicianShellState extends State<TechnicianShell> {
 
     final tabs = [
       TechnicianDashboardScreen(
-        onViewRequest: (id) => setState(() { _viewingRequestId = id; _viewingFromSearch = false; }),
+        onViewRequest: (id) => setState(() { _viewingRequestId = id; }),
         onChat: (id) => setState(() => _chatRequestId = id),
         onNotifications: () => setState(() => _showNotifications = true),
       ),
       TechnicianSearchScreen(
-        onViewRequest: (id) => setState(() { _viewingRequestId = id; _viewingFromSearch = true; }),
+        onViewRequest: (id) => setState(() { _viewingRequestId = id; }),
         onAcceptRequest: (id) {
           app.updateRequest(id, status: RequestStatus.inProgress, technicianId: app.user?.id, technicianName: app.user?.name);
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Request accepted!')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(l10n.request_accepted)));
         },
       ),
       TechnicianMyRequestsScreen(
-        onViewRequest: (id) => setState(() { _viewingRequestId = id; _viewingFromSearch = false; }),
+        onViewRequest: (id) => setState(() { _viewingRequestId = id; }),
       ),
       const TechnicianProfileTab(),
     ];
 
     return Scaffold(
       body: tabs[_tab],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _tab,
-        onDestinationSelected: (i) => setState(() => _tab = i),
-        destinations: const [
-          NavigationDestination(icon: Icon(Icons.dashboard_outlined), selectedIcon: Icon(Icons.dashboard), label: 'Dashboard'),
-          NavigationDestination(icon: Icon(Icons.search_outlined), selectedIcon: Icon(Icons.search), label: 'Find'),
-          NavigationDestination(icon: Icon(Icons.list_alt_outlined), selectedIcon: Icon(Icons.list_alt), label: 'My Jobs'),
-          NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person), label: 'Profile'),
-        ],
+      bottomNavigationBar: NavigationBarTheme(
+        data: NavigationBarThemeData(
+          indicatorColor: theme.colorScheme.primary.withValues(alpha: 0.2),
+          labelTextStyle: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return TextStyle(color: theme.colorScheme.primary, fontWeight: FontWeight.bold);
+            }
+            return TextStyle(color: theme.hintColor);
+          }),
+          iconTheme: WidgetStateProperty.resolveWith((states) {
+            if (states.contains(WidgetState.selected)) {
+              return IconThemeData(color: theme.colorScheme.primary);
+            }
+            return IconThemeData(color: theme.hintColor);
+          }),
+        ),
+        child: NavigationBar(
+          backgroundColor: theme.scaffoldBackgroundColor,
+          elevation: 10,
+          selectedIndex: _tab,
+          onDestinationSelected: (i) => setState(() => _tab = i),
+          destinations: [
+            NavigationDestination(icon: const Icon(Icons.dashboard_outlined), selectedIcon: const Icon(Icons.dashboard), label: l10n.dashboard),
+            NavigationDestination(icon: const Icon(Icons.search_outlined), selectedIcon: const Icon(Icons.search), label: l10n.find),
+            NavigationDestination(icon: const Icon(Icons.list_alt_outlined), selectedIcon: const Icon(Icons.list_alt), label: l10n.my_jobs),
+            NavigationDestination(icon: const Icon(Icons.person_outline), selectedIcon: const Icon(Icons.person), label: l10n.profile),
+          ],
+        ),
       ),
     );
   }

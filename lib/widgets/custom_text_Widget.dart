@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CustomTextWidget extends StatelessWidget {
- String text;
- TextStyle textStyle;
-CustomTextWidget({required this.text,required this.textStyle});
+  final String text;
+  final TextStyle textStyle;
+
+  const CustomTextWidget({
+    super.key,
+    required this.text,
+    required this.textStyle,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Text(

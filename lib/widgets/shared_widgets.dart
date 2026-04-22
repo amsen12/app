@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../models/models.dart';
-import '../theme.dart';
 import '../utils/profix_colors.dart';
+import '../utils/profixStyles.dart';
 
 // ─── Status Badge ─────────────────────────────────────────────────────────────
 
@@ -18,7 +18,7 @@ class StatusBadge extends StatelessWidget {
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: fg.withOpacity(0.25)),
+        border: Border.all(color: fg.withValues(alpha: 0.25)),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -47,41 +47,102 @@ class StatusBadge extends StatelessWidget {
 
 // ─── Service Card ─────────────────────────────────────────────────────────────
 
+
+
 class ServiceCard extends StatelessWidget {
   final ServiceType type;
   final VoidCallback onTap;
-  const ServiceCard({super.key, required this.type, required this.onTap});
 
-  static const _data = {
-    ServiceType.plumber: ('🚰', 'Plumber', 'Pipes & leaks', Color(0xFFEFF6FF), Color(0xFF2563EB)),
-    ServiceType.carpenter: ('🔨', 'Carpenter', 'Wood & furniture', Color(0xFFFFFBEB), Color(0xFFD97706)),
-    ServiceType.electrician: ('💡', 'Electrician', 'Wiring & installs', Color(0xFFFEFCE8), Color(0xFFCA8A04)),
-  };
+  const ServiceCard({super.key, required this.type, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    final (icon, label, desc, bg, fg) = _data[type]!;
+    // 1. التحقق من حالة الثيم
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
+
+    // 2. تحديد البيانات والألوان بناءً على النوع وحالة الثيم (نفس ألوان الصورة)
+    final Map<String, dynamic> config = _getServiceConfig(type, isDark);
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
         decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: fg.withOpacity(0.15)),
+          color: config['bg'],
+          borderRadius: BorderRadius.circular(20), // زوايا دائرية أكثر مثل الصور
+          border: isDark ? Border.all(color: Colors.white.withValues(alpha: 0.05)) : null,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(icon, style: const TextStyle(fontSize: 30)),
-            const SizedBox(height: 6),
-            Text(label, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-            const SizedBox(height: 2),
-            Text(desc, style: TextStyle(fontSize: 10, color: Colors.grey.shade600), textAlign: TextAlign.center),
+            // أيقونة الخدمة داخل خلفية دائرية صغيرة
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: config['iconBg'],
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                config['icon'],
+                color: Colors.white,
+                size: 26,
+              ),
+            ),
+            const SizedBox(height: 12),
+            // اسم الخدمة
+            Text(
+              config['label'],
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                color: isDark ? Colors.white : Colors.black,
+              ),
+            ),
+            const SizedBox(height: 4),
+            // وصف الخدمة
+            Text(
+              config['desc'],
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 11,
+                color: isDark ? Colors.white70 : Colors.grey.shade600,
+                height: 1.2,
+              ),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  // ميثود لجلب إعدادات الألوان والأيقونات بناءً على الصورة
+  Map<String, dynamic> _getServiceConfig(ServiceType type, bool isDark) {
+    switch (type) {
+      case ServiceType.plumber:
+        return {
+          'icon': Icons.plumbing,
+          'label': 'Plumber',
+          'desc': 'Pipes, leaks\n& fixtures',
+          'bg': isDark ? const Color(0xFF1E3A5F) : const Color(0xFFEFF6FF), // اللون الأزرق اللي طلبتيه
+          'iconBg': const Color(0xFF38B6FF),
+        };
+      case ServiceType.carpenter:
+        return {
+          'icon': Icons.handyman,
+          'label': 'Carpenter',
+          'desc': 'Wood &\nfurniture',
+          'bg': isDark ? const Color(0xFF2D2D2D) : const Color(0xFFFFFBEB), // رمادي غامق في الدارك
+          'iconBg': const Color(0xFF8D6E63),
+        };
+      case ServiceType.electrician:
+        return {
+          'icon': Icons.lightbulb,
+          'label': 'Electrician',
+          'desc': 'Wiring &\ninstallations',
+          'bg': isDark ? const Color(0xFF2D2D2D) : const Color(0xFFFEFCE8),
+          'iconBg': const Color(0xFFFFCA28),
+        };
+    }
   }
 }
 
@@ -122,24 +183,24 @@ class TechnicianCard extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        Text(technician.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                        Text(technician.name, style: ProfixStyles.textSmBold),
                         const SizedBox(width: 6),
                         if (technician.available)
-                          Container(width: 8, height: 8, decoration: const BoxDecoration(color: AppTheme.success, shape: BoxShape.circle)),
+                          Container(width: 8, height: 8, decoration: const BoxDecoration(color: ProfixColors.green, shape: BoxShape.circle)),
                       ],
                     ),
                     const SizedBox(height: 2),
                     Row(
                       children: [
-                        const Icon(Icons.star, size: 12, color: AppTheme.warning),
-                        Text(' ${technician.rating}', style: const TextStyle(fontSize: 12)),
-                        Text(' • ${technician.distance} km', style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
+                        const Icon(Icons.star, size: 12, color: ProfixColors.amber),
+                        Text(' ${technician.rating}', style: ProfixStyles.textXsRegular),
+                        Text(' • ${technician.distance} km', style: ProfixStyles.textXsRegular.copyWith(color: Colors.grey.shade500)),
                       ],
                     ),
                   ],
                 ),
               ),
-              Text(_profLabels[technician.profession]!, style: const TextStyle(fontSize: 12)),
+              Text(_profLabels[technician.profession]!, style: ProfixStyles.textXsRegular),
             ],
           ),
         ),
@@ -166,26 +227,26 @@ class TechnicianCard extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(technician.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                        Text(technician.name, style: ProfixStyles.textBaseBold),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                           decoration: BoxDecoration(
-                            color: technician.available ? AppTheme.success.withOpacity(0.1) : Colors.grey.shade100,
+                            color: technician.available ? ProfixColors.green.withValues(alpha: 0.1) : Colors.grey.shade100,
                             borderRadius: BorderRadius.circular(20),
                           ),
                           child: Text(
                             technician.available ? 'Available' : 'Busy',
-                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: technician.available ? AppTheme.success : Colors.grey),
+                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: technician.available ? ProfixColors.green : Colors.grey),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 4),
-                    Text(_profLabels[technician.profession]!, style: TextStyle(color: Colors.grey.shade600, fontSize: 13)),
+                    Text(_profLabels[technician.profession]!, style: ProfixStyles.getTextStyle(size: ProfixStyles.textXs + 1, weight: FontWeight.w400, color: Colors.grey.shade600)),
                     const SizedBox(height: 6),
                     Row(
                       children: [
-                        const Icon(Icons.star, size: 14, color: AppTheme.warning),
+                        const Icon(Icons.star, size: 14, color: ProfixColors.amber),
                         Text(' ${technician.rating}', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
                         const SizedBox(width: 10),
                         Icon(Icons.check_circle_outline, size: 14, color: Colors.grey.shade500),
@@ -208,10 +269,10 @@ class TechnicianCard extends StatelessWidget {
   Widget _avatar(double size) {
     return CircleAvatar(
       radius: size / 2,
-      backgroundColor: AppTheme.primary.withOpacity(0.1),
+      backgroundColor: ProfixColors.primary.withValues(alpha: 0.1),
       child: Text(
         technician.name[0],
-        style: TextStyle(fontSize: size * 0.4, fontWeight: FontWeight.bold, color: AppTheme.primary),
+        style: TextStyle(fontSize: size * 0.4, fontWeight: FontWeight.bold, color: ProfixColors.primary),
       ),
     );
   }
@@ -246,15 +307,15 @@ class RequestCard extends StatelessWidget {
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(_icons[request.serviceType]!, style: const TextStyle(fontSize: 28)),
+                      Text(_icons[request.serviceType]!, style: ProfixStyles.text2xlBold),
                       const SizedBox(width: 10),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(_names[request.serviceType]!, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                            Text(_names[request.serviceType]!, style: ProfixStyles.textBaseBold),
                             if (request.technicianName != null)
-                              Text('by ${request.technicianName}', style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
+                              Text('by ${request.technicianName}', style: ProfixStyles.textXsRegular.copyWith(color: Colors.grey.shade500)),
                           ],
                         ),
                       ),
@@ -262,7 +323,7 @@ class RequestCard extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 10),
-                  Text(request.description, style: TextStyle(color: Colors.blue.shade700, fontSize: 14), maxLines: 2, overflow: TextOverflow.ellipsis),
+                  Text(request.description, style: ProfixStyles.textSmRegular.copyWith(color: Colors.blue.shade700), maxLines: 2, overflow: TextOverflow.ellipsis),
                   const SizedBox(height: 10),
                   Row(
                     children: [
@@ -286,7 +347,7 @@ class RequestCard extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   child: Row(
                     children: [
-                      Icon(Icons.chat_bubble_outline, size: 16, color: AppTheme.primary),
+                      Icon(Icons.chat_bubble_outline, size: 16, color: ProfixColors.primary),
                       const SizedBox(width: 8),
                       Text('Chat with Technician', style: TextStyle(fontSize: 14, color: ProfixColors.lightBlue, fontWeight: FontWeight.w500)),
                       const Spacer(),
@@ -310,20 +371,54 @@ class SectionHeader extends StatelessWidget {
   final String title;
   final String? actionLabel;
   final VoidCallback? onAction;
-  const SectionHeader({super.key, required this.title, this.actionLabel, this.onAction});
+  final Color? titleColor; // تأكدت من تعريف النوع كـ Color
+
+  const SectionHeader({
+    super.key,
+    this.titleColor,
+    required this.title,
+    this.actionLabel,
+    this.onAction,
+  });
 
   @override
   Widget build(BuildContext context) {
+    // 1. التحقق من حالة الدارك مود
+    bool isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            // 2. إذا لم يتم تمرير لون يدوي، يختار اللون بناءً على الثيم
+            color: titleColor ?? (isDark ? Colors.white : Colors.black),
+          ),
+        ),
         if (actionLabel != null)
-          TextButton.icon(
-            onPressed: onAction,
-            icon: const Icon(Icons.chevron_right, size: 16),
-            label: Text(actionLabel!),
-            style: TextButton.styleFrom(foregroundColor: ProfixColors.lightBlue, padding: EdgeInsets.zero),
+          Flexible(
+            child: TextButton( // أزلنا .icon ليكون التنسيق مرناً أكثر مثل الصور
+              onPressed: onAction,
+              style: TextButton.styleFrom(
+                foregroundColor: ProfixColors.lightBlue,
+                padding: EdgeInsets.zero,
+                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    actionLabel!,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(width: 4),
+                  const Icon(Icons.chevron_right, size: 18),
+                ],
+              ),
+            ),
           ),
       ],
     );
@@ -351,7 +446,7 @@ class EmptyState extends StatelessWidget {
             Text(title, style: TextStyle(fontSize: 16, color: Colors.grey.shade600, fontWeight: FontWeight.w500)),
             if (subtitle != null) ...[
               const SizedBox(height: 6),
-              Text(subtitle!, style: TextStyle(fontSize: 13, color: Colors.grey.shade400), textAlign: TextAlign.center),
+              Text(subtitle!, style: ProfixStyles.getTextStyle(size: ProfixStyles.textXs + 1, weight: FontWeight.w400, color: Colors.grey.shade400), textAlign: TextAlign.center)
             ],
           ],
         ),

@@ -85,7 +85,7 @@ class _ProfileTabState extends State<ProfileTab> {
                 _buildDivider(isDark),
                 MenuItem(icon: Icons.security_outlined,
                     title: "Security & Privacy", isDark: isDark,onTap: (){
-                  Navigator.pushNamed(context, TechnicalSecurityPrivacy.routeName);
+                  Navigator.pushNamed(context, CustomerSecurityPrivacy.routeName);
                   },)
               ]),
               const SizedBox(height: 24),

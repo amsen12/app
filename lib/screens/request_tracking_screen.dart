@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 import '../models/models.dart';
 import '../providers/app_provider.dart';
 import '../widgets/shared_widgets.dart';
-import '../theme.dart';
+import '../utils/profix_colors.dart';
+import '../utils/profix_theme.dart';
+import '../utils/profixStyles.dart';
 import 'chat_screen.dart';
 
 class RequestTrackingScreen extends StatefulWidget {
@@ -67,14 +69,14 @@ class _RequestTrackingScreenState extends State<RequestTrackingScreen> {
                   children: [
                     Row(
                       children: [
-                        Text(_icons[request.serviceType]!, style: const TextStyle(fontSize: 36)),
+                        Text(_icons[request.serviceType]!, style: ProfixStyles.text4xlBold),
                         const SizedBox(width: 12),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('${_names[request.serviceType]} Service', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                              Text(DateFormat('MMM d, yyyy • h:mm a').format(request.createdAt), style: TextStyle(fontSize: 12, color: Colors.grey.shade500)),
+                              Text('${_names[request.serviceType]} Service', style: ProfixStyles.textBaseBold),
+                              Text(DateFormat('MMM d, yyyy • h:mm a').format(request.createdAt), style: ProfixStyles.textXsRegular.copyWith(color: Colors.grey.shade500)),
                             ],
                           ),
                         ),
@@ -86,7 +88,7 @@ class _RequestTrackingScreenState extends State<RequestTrackingScreen> {
                     Row(children: [
                       Icon(Icons.location_on_outlined, size: 14, color: Colors.grey.shade500),
                       const SizedBox(width: 4),
-                      Expanded(child: Text(request.address, style: TextStyle(fontSize: 12, color: Colors.grey.shade500))),
+                      Expanded(child: Text(request.address, style: ProfixStyles.textXsRegular.copyWith(color: Colors.grey.shade500))),
                     ]),
                   ],
                 ),
@@ -101,7 +103,7 @@ class _RequestTrackingScreenState extends State<RequestTrackingScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Status Timeline', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    Text('Status Timeline', style: ProfixStyles.textBaseBold),
                     const SizedBox(height: 16),
                     ...steps.asMap().entries.map((entry) {
                       final i = entry.key;
@@ -117,7 +119,7 @@ class _RequestTrackingScreenState extends State<RequestTrackingScreen> {
                               width: 36, height: 36,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: isCompleted ? AppTheme.success : isActive ? AppTheme.primary : Colors.grey.shade200,
+                                color: isCompleted ? ProfixColors.green : isActive ? ProfixColors.primary : Colors.grey.shade200,
                               ),
                               child: Icon(icon, size: 18, color: isPending ? Colors.grey : Colors.white),
                             ),
@@ -127,7 +129,7 @@ class _RequestTrackingScreenState extends State<RequestTrackingScreen> {
                               children: [
                                 Text(label, style: TextStyle(fontWeight: FontWeight.w600, color: isPending ? Colors.grey : Colors.black87)),
                                 if (isActive && request.status == RequestStatus.inProgress)
-                                  Text('In progress...', style: TextStyle(fontSize: 11, color: Colors.grey.shade500)),
+                                  Text('In progress...', style: ProfixStyles.getTextStyle(size: ProfixStyles.textXs - 1, weight: FontWeight.w400, color: Colors.grey.shade500)),
                               ],
                             ),
                           ],
@@ -148,24 +150,24 @@ class _RequestTrackingScreenState extends State<RequestTrackingScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Assigned Technician', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text('Assigned Technician', style: ProfixStyles.textBaseBold),
                       const SizedBox(height: 12),
                       Row(
                         children: [
                           CircleAvatar(
                             radius: 28,
-                            backgroundColor: AppTheme.primary.withOpacity(0.1),
-                            child: Text(technician.name[0], style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primary, fontSize: 20)),
+                            backgroundColor: ProfixColors.primary.withOpacity(0.1),
+                            child: Text(technician.name[0], style: ProfixStyles.getTextStyle(size: ProfixStyles.textXl, weight: FontWeight.bold, color: ProfixColors.primary)),
                           ),
                           const SizedBox(width: 14),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(technician.name, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                                Text(technician.name, style: ProfixStyles.getTextStyle(size: ProfixStyles.textSm + 1, weight: FontWeight.bold)),
                                 Row(children: [
-                                  const Icon(Icons.star, size: 14, color: AppTheme.warning),
-                                  Text(' ${technician.rating} • ${technician.completedJobs} jobs', style: TextStyle(fontSize: 13, color: Colors.grey.shade500)),
+                                  const Icon(Icons.star, size: 14, color: ProfixColors.amber),
+                                  Text(' ${technician.rating} • ${technician.completedJobs} jobs', style: ProfixStyles.getTextStyle(size: ProfixStyles.textXs + 1, weight: FontWeight.w400, color: Colors.grey.shade500)),
                                 ]),
                               ],
                             ),
@@ -201,13 +203,13 @@ class _RequestTrackingScreenState extends State<RequestTrackingScreen> {
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     children: [
-                      const Text('Rate Your Experience', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text('Rate Your Experience', style: ProfixStyles.textBaseBold),
                       const SizedBox(height: 12),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(5, (i) => IconButton(
                           onPressed: () => setState(() => _rating = i + 1.0),
-                          icon: Icon(i < _rating ? Icons.star : Icons.star_border, color: AppTheme.warning, size: 32),
+                          icon: Icon(i < _rating ? Icons.star : Icons.star_border, color: ProfixColors.amber, size: 32),
                         )),
                       ),
                       const SizedBox(height: 8),
@@ -228,16 +230,16 @@ class _RequestTrackingScreenState extends State<RequestTrackingScreen> {
               const SizedBox(height: 12),
               Container(
                 padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(color: AppTheme.success.withOpacity(0.08), borderRadius: BorderRadius.circular(14), border: Border.all(color: AppTheme.success.withOpacity(0.3))),
+                decoration: BoxDecoration(color: ProfixColors.green.withOpacity(0.08), borderRadius: BorderRadius.circular(14), border: Border.all(color: ProfixColors.green.withOpacity(0.3))),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Row(children: [Icon(Icons.check_circle, color: AppTheme.success, size: 18), SizedBox(width: 8), Text('Review Submitted', style: TextStyle(fontWeight: FontWeight.bold))]),
+                    const Row(children: [Icon(Icons.check_circle, color: ProfixColors.green, size: 18), SizedBox(width: 8), Text('Review Submitted', style: TextStyle(fontWeight: FontWeight.bold))]),
                     const SizedBox(height: 8),
-                    Row(children: List.generate(5, (i) => Icon(i < (request.rating ?? 0) ? Icons.star : Icons.star_border, color: AppTheme.warning, size: 18))),
+                    Row(children: List.generate(5, (i) => Icon(i < (request.rating ?? 0) ? Icons.star : Icons.star_border, color: ProfixColors.amber, size: 18))),
                     if (request.review != null && request.review!.isNotEmpty) ...[
                       const SizedBox(height: 6),
-                      Text('"${request.review}"', style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey.shade600, fontSize: 13)),
+                      Text('"${request.review}"', style: ProfixStyles.getTextStyle(size: ProfixStyles.textXs + 1, weight: FontWeight.w400, color: Colors.grey.shade600).copyWith(fontStyle: FontStyle.italic)),
                     ],
                   ],
                 ),

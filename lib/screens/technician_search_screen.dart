@@ -4,7 +4,9 @@ import 'package:intl/intl.dart';
 import '../models/models.dart';
 import '../providers/app_provider.dart';
 import '../widgets/shared_widgets.dart';
-import '../theme.dart';
+import '../utils/profix_colors.dart';
+import '../utils/profixStyles.dart';
+import '../providers/theme_provider.dart';
 
 class TechnicianSearchScreen extends StatefulWidget {
   final Function(String) onViewRequest;
@@ -60,15 +62,18 @@ class _TechnicianSearchScreenState extends State<TechnicianSearchScreen> {
   @override
   Widget build(BuildContext context) {
     final app = context.watch<AppProvider>();
+    final themeProvider = Provider.of<AppThemeProvider>(context);
+    final isDark = themeProvider.isDarkTheme();
     final filtered = _filter(app.requests);
 
     return Scaffold(
+      backgroundColor: isDark ? ProfixColors.darkTheme : ProfixColors.background,
       appBar: AppBar(
-        title: const Text('Find Requests', style: TextStyle(fontWeight: FontWeight.w600)),
+        title: Text('Find Requests', style: ProfixStyles.textBaseBold.copyWith(color: isDark ? Colors.white : Colors.black)),
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(_showFilters ? 130 : 96),
           child: Container(
-            color: Colors.white,
+            color: isDark ? ProfixColors.darkTheme2 : Colors.white,
             padding: const EdgeInsets.fromLTRB(16, 4, 16, 12),
             child: Column(
               children: [
@@ -76,13 +81,18 @@ class _TechnicianSearchScreenState extends State<TechnicianSearchScreen> {
                 TextField(
                   controller: _searchCtrl,
                   onChanged: (v) => setState(() => _query = v),
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black),
                   decoration: InputDecoration(
                     hintText: 'Search by description or service...',
+                    hintStyle: TextStyle(color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
                     prefixIcon: const Icon(Icons.search),
                     suffixIcon: IconButton(
-                      icon: Icon(Icons.tune, color: _showFilters ? AppTheme.primary : Colors.grey),
+                      icon: Icon(Icons.tune, color: _showFilters ? ProfixColors.primary : Colors.grey),
                       onPressed: () => setState(() => _showFilters = !_showFilters),
                     ),
+                    filled: true,
+                    fillColor: isDark ? ProfixColors.darkTheme : Colors.grey.shade100,
+                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: BorderSide.none),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -99,15 +109,15 @@ class _TechnicianSearchScreenState extends State<TechnicianSearchScreen> {
                           child: Container(
                             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
-                              color: isSelected ? AppTheme.primary : Colors.white,
+                              color: isSelected ? ProfixColors.primary : (isDark ? ProfixColors.darkTheme : Colors.white),
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: isSelected ? AppTheme.primary : Colors.grey.shade300),
+                              border: Border.all(color: isSelected ? ProfixColors.primary : (isDark ? Colors.grey.shade800 : Colors.grey.shade300)),
                             ),
                             child: Row(
                               children: [
                                 Text(c.$2, style: const TextStyle(fontSize: 14)),
                                 const SizedBox(width: 4),
-                                Text(c.$3, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: isSelected ? Colors.white : Colors.grey.shade700)),
+                                Text(c.$3, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: isSelected ? Colors.white : (isDark ? Colors.white70 : Colors.grey.shade700))),
                               ],
                             ),
                           ),
@@ -123,10 +133,10 @@ class _TechnicianSearchScreenState extends State<TechnicianSearchScreen> {
                     scrollDirection: Axis.horizontal,
                     child: Row(
                       children: [
-                        _distChip(null, 'Any Distance'),
-                        _distChip(2, '< 2 km'),
-                        _distChip(5, '< 5 km'),
-                        _distChip(10, '< 10 km'),
+                        _distChip(null, 'Any Distance', isDark),
+                        _distChip(2, '< 2 km', isDark),
+                        _distChip(5, '< 5 km', isDark),
+                        _distChip(10, '< 10 km', isDark),
                       ],
                     ),
                   ),
@@ -142,12 +152,14 @@ class _TechnicianSearchScreenState extends State<TechnicianSearchScreen> {
         padding: const EdgeInsets.all(16),
         itemCount: filtered.length + 1,
         itemBuilder: (_, i) {
-          if (i == 0) return Padding(padding: const EdgeInsets.only(bottom: 12), child: Text('${filtered.length} request${filtered.length != 1 ? 's' : ''} found', style: TextStyle(fontSize: 13, color: Colors.grey.shade500)));
+          if (i == 0) return Padding(padding: const EdgeInsets.only(bottom: 12), child: Text('${filtered.length} request${filtered.length != 1 ? 's' : ''} found', style: TextStyle(fontSize: 13, color: isDark ? Colors.grey.shade400 : Colors.grey.shade500)));
           final req = filtered[i - 1];
           final dist = _pseudoDistance(req);
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: Card(
+              color: isDark ? ProfixColors.darkTheme2 : Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Column(
@@ -162,10 +174,10 @@ class _TechnicianSearchScreenState extends State<TechnicianSearchScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('${req.serviceType.name[0].toUpperCase()}${req.serviceType.name.substring(1)} Service', style: const TextStyle(fontWeight: FontWeight.bold)),
+                              Text('${req.serviceType.name[0].toUpperCase()}${req.serviceType.name.substring(1)} Service', style: ProfixStyles.textBaseBold.copyWith(color: isDark ? Colors.white : Colors.black)),
                               Row(children: [
-                                Icon(Icons.location_on_outlined, size: 12, color: Colors.grey.shade500),
-                                Text(' ${_maskAddress(req.address)} · ${dist.toStringAsFixed(1)} km', style: TextStyle(fontSize: 11, color: Colors.grey.shade500)),
+                                Icon(Icons.location_on_outlined, size: 12, color: isDark ? Colors.grey.shade400 : Colors.grey.shade500),
+                                Text(' ${_maskAddress(req.address)} · ${dist.toStringAsFixed(1)} km', style: TextStyle(fontSize: 11, color: isDark ? Colors.grey.shade400 : Colors.grey.shade500)),
                               ]),
                             ],
                           ),
@@ -174,11 +186,11 @@ class _TechnicianSearchScreenState extends State<TechnicianSearchScreen> {
                       ],
                     ),
                     const SizedBox(height: 8),
-                    Text(req.description, style: TextStyle(fontSize: 13, color: Colors.grey.shade700), maxLines: 2, overflow: TextOverflow.ellipsis),
+                    Text(req.description, style: TextStyle(fontSize: 13, color: isDark ? Colors.white70 : Colors.grey.shade700), maxLines: 2, overflow: TextOverflow.ellipsis),
                     const SizedBox(height: 8),
                     Row(children: [
-                      Icon(Icons.access_time, size: 12, color: Colors.grey.shade500),
-                      Text(' ${DateFormat('MMM d, h:mm a').format(req.createdAt)}', style: TextStyle(fontSize: 11, color: Colors.grey.shade500)),
+                      Icon(Icons.access_time, size: 12, color: isDark ? Colors.grey.shade400 : Colors.grey.shade500),
+                      Text(' ${DateFormat('MMM d, h:mm a').format(req.createdAt)}', style: TextStyle(fontSize: 11, color: isDark ? Colors.grey.shade400 : Colors.grey.shade500)),
                     ]),
                     const SizedBox(height: 12),
                     Row(
@@ -198,7 +210,7 @@ class _TechnicianSearchScreenState extends State<TechnicianSearchScreen> {
     );
   }
 
-  Widget _distChip(double? val, String label) {
+  Widget _distChip(double? val, String label, bool isDark) {
     final isSelected = _maxDistance == val;
     return Padding(
       padding: const EdgeInsets.only(right: 8),
@@ -207,11 +219,11 @@ class _TechnicianSearchScreenState extends State<TechnicianSearchScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: isSelected ? AppTheme.primary : Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: isSelected ? AppTheme.primary : Colors.grey.shade300),
+            color: isSelected ? ProfixColors.primary : (isDark ? ProfixColors.darkTheme : Colors.white),
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(color: isSelected ? ProfixColors.primary : (isDark ? Colors.grey.shade800 : Colors.grey.shade300)),
           ),
-          child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: isSelected ? Colors.white : Colors.grey.shade600)),
+          child: Text(label, style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: isSelected ? Colors.white : (isDark ? Colors.white70 : Colors.grey.shade600))),
         ),
       ),
     );

@@ -18,7 +18,8 @@ static const Color green = Color(0xff2BA24C);
 static const Color blue = Color(0xff2563EB);
 // Primary
   static const Color primary = Color(0xFF0284C5);
-  static const Color primaryText = Color(0xFFF0F9FF);
+  static const Color primaryText = Colors.black;
+  static const Color secondaryText = Colors.grey;
 
   // Base & Background
   static const Color background = Color(0xFFF1F5F9);
